@@ -1,0 +1,11 @@
+PUT  http://localhost:5000/api/payments/
+Content-Type: application/json
+
+{
+    "year": "2009",
+    "month": "November",
+    "payments": {
+        "memberId": "1234512345",
+        "package": "Advnaced"
+    }
+}

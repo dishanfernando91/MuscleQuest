@@ -1,0 +1,6 @@
+GET http://localhost:5000/api/members/
+Content-Type: application/json
+
+{
+    "memberId": "123456"
+}

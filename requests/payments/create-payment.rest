@@ -1,0 +1,11 @@
+POST http://localhost:5000/api/payments/
+Content-Type: application/json
+
+{
+    "year": "2009",
+    "month": "November",
+    "payments": {
+        "memberId": "12345",
+        "package": "Basic"
+    }
+}
