@@ -32,8 +32,10 @@ export default function MemberList() {
     
     }
 
+    
+
     const memberList = () => {
-        return (members.sort((x, y) => (x === y) ? 0 : x ? -1 : 1)).map(currentMember => {
+        return (members.sort((x, y) => (x.status === y.status) ? 0 : x.status ? -1 : 1)).map(currentMember => {
             return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
         })
     }

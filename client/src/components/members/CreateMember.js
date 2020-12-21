@@ -47,7 +47,7 @@ export default function CreateMember() {
         axios.post('/api/members', member)
             .then(res => console.log(res.data))
         
-        // window.location = '/show';
+        window.location = '/show';
     }
 
     return (
