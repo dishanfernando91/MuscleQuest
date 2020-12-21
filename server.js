@@ -38,7 +38,7 @@ app.use('/api/members', require('./routes/api/members'))
 app.use('/api/packages', require('./routes/api/packages'))
 app.use('/api/payments', require('./routes/api/payments'))
 
-if(process.env.NODE_ENV === 'default') {
+if(process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'))
 
     app.get('*', (req, res) => {
