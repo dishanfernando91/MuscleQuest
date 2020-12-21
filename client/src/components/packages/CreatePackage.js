@@ -29,7 +29,7 @@ export default function CreatePackage() {
     }  
     
     const packageList = () => {
-        return packages.map(currentPackage => {
+        return packages.sort((x, y) => (x.status === y.status) ? 0 : x.status ? -1 : 1).map(currentPackage => {
             return <PackageDetails package={currentPackage} key={currentPackage._id} setInactive={setInactive}/>
         })
     }

@@ -22,7 +22,7 @@ export default function CreatePayment() {
     useEffect(() => {
         axios.get('/api/members/')
         .then(res => {
-            setMembers(res.data)
+            setMembers(res.data.filter(member => member.status));
         })
         .catch(err => console.log(err))
     }, [])
@@ -40,9 +40,9 @@ export default function CreatePayment() {
        return {value: member, label: `${member.firstName} ${member.lastName}`}
     })
 
-    const memberIdOptions = members.map(member => {
-        return {value: member.memberId, label: `${member.memberId}`}
-    })
+    // const memberIdOptions = members.map(member => {
+    //     return {value: member.memberId, label: `${member.memberId}`}
+    // })
 
     //package --> gymPackage, package is reserved
     const packageOptions = packages.filter(gymPackage => gymPackage.status).map(gymPackage => {
