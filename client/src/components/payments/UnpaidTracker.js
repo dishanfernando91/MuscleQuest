@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function UnpaidTracker({member}) {
+export default function UnpaidTracker({ member: { memberId, name, status } }) {
     return (
         <div className="pyt-pending-entry">
-            <p style={ {color: "red"} }>ID - {member.name}</p>
+            { status ? <p style={ {color: "red"} }>{memberId} - {name}</p> : <></> }
         </div>
     )
 }

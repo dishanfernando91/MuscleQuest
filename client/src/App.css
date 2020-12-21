@@ -15,6 +15,12 @@
   font-size: 14px;
 }
 
+.inactive-table-row {
+  font-size: 14px;
+  font-style: italic;
+  color: #a6a6a6;
+}
+
 .table-row:hover {
   background-color: rgb(230, 230, 230);
   transition: all 0.5s;
@@ -79,6 +85,18 @@
   margin-top: 5px;
 }
 
+.member-id {
+  height: 24px;
+  font-size: 14px;
+  width: 100px;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid rgb(153, 153, 153);
+  outline: none;
+  margin-left: 58px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
 .input-add {
   display: flex;
   justify-content: flex-start;

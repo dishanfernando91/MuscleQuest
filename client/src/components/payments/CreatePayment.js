@@ -10,7 +10,6 @@ export default function CreatePayment() {
     const [packages, setPackages] = useState([])
     const [allPayments, setAllPayments] = useState({});
     const [members, setMembers] = useState([]);
-    const [selectedMember, setSelectedMemeber] = useState({});
 
     useEffect(() => {
         axios.get('/api/packages/')
@@ -36,13 +35,21 @@ export default function CreatePayment() {
         .catch(err => console.log(err))
     }, [])
 
+    // React Select Options
     const memberOptions = members.map(member => {
        return {value: member, label: `${member.firstName} ${member.lastName}`}
     })
+
+    const memberIdOptions = members.map(member => {
+        return {value: member.memberId, label: `${member.memberId}`}
+    })
+
     //package --> gymPackage, package is reserved
     const packageOptions = packages.filter(gymPackage => gymPackage.status).map(gymPackage => {
            return {value: gymPackage, label: gymPackage.title} 
     });
+
+    
    
     const months = [    
         {value: "January", label: "January"},
@@ -110,8 +117,9 @@ export default function CreatePayment() {
             <div className="pyt-form">
                 <form onSubmit={handleSubmit(onSubmitData)}>
                 {/* <Controller
-                    as={<Select />}
-                    name=""
+                    as={<Select
+                        options={memberIdOptions} />}
+                    name="memberId"
                     control={control}
                     placeholder="Member ID"
                     className="pyt-selector"

@@ -32,9 +32,9 @@ export default function PaymentHistory() {
 
         axios.get('/api/members')
         .then(res => {
-        setAllMembers(res.data)
-    })
-    .catch(err => console.log(err))
+            setAllMembers(res.data)
+        })
+        .catch(err => console.log(err))
     }, [])
 
     //Generate unique years to display in select option...
@@ -60,7 +60,7 @@ export default function PaymentHistory() {
     }
     const distinctMonths = [...new Set(monthRange())];
 
-                //---Sort generated set of unique months in chronological order---
+    //---Sort generated set of unique months in chronological order---
     const sortByMonth = arr => {
         const months = ["January", "February", "March", "April", "May", "June",
                     "July", "August", "September", "October", "November", "December"];
@@ -127,6 +127,7 @@ export default function PaymentHistory() {
                 const pkg = allPackages.find(packages => packages._id == selectedPackages[index]);
 
                 return {
+                    memberId: `${member.memberId}`,
                     name: `${member.firstName} ${member.lastName}`,
                     packages: `${pkg.title} - Rs.${pkg.fee} ${!pkg.status ? "(Inactive)" : ""}`,
                     date: selectedDates[index]
@@ -134,12 +135,14 @@ export default function PaymentHistory() {
             });
             setPaymentObjects(paymentObjects);
 
-            //Extract members from all members who has not paid for the queried period and create object.
-            unpaid = allMembers.filter(member => !selectedPayments.includes(member._id))
+            // Extract members from all members who has not paid for the queried period and create object.
+            unpaid = allMembers.filter(member => !selectedPayments.includes(member._id) )
             const unpaidMembers = unpaid.map(member => {
-               return {
-                   name: `${member.firstName} ${member.lastName}`
-               }
+               return ({
+                   memberId: `${member.memberId}`,
+                   name: `${member.firstName} ${member.lastName}`,
+                   status: member.status
+               })
            });
            setUnpaidMembers(unpaidMembers);
             }
@@ -184,7 +187,7 @@ export default function PaymentHistory() {
                 <div>
                     {paymentObjects.length !== 0 ? <PaymentTable paymentObjects={paymentObjects}/> : <div></div>}
                 </div>
-                {unpaidMembers.length != 0 ? 
+                {unpaidMembers.length !== 0 ? 
                     <div className="pyt-pending">
                         <h6 style={{textAlign: "center", fontSize: "14px"}}>Pending Payments</h6>
                         {pendingPayments()}

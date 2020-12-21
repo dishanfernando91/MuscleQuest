@@ -13,6 +13,7 @@ export default function EditMember(props) {
 
     const [date, setDate] = useState(null);
     const [member, setMember] = useState({
+        memberId: '',
         firstName: '',
         lastName: '',
         gender: '', 
@@ -38,6 +39,7 @@ export default function EditMember(props) {
         axios.get(`/api/members/${props.match.params.id}`)
             .then(res => {
                 setMember({
+                    memberId: res.data.memberId,
                     firstName: res.data.firstName,
                     lastName: res.data.lastName,
                     address: res.data.address,
@@ -77,15 +79,24 @@ export default function EditMember(props) {
                 waist: data.features.bodyFat
             }
         } 
-        axios.post(`/api/members/${props.match.params.id}`, updatedMember)
+        axios.post(`/api/members/update/${props.match.params.id}`, updatedMember)
             .then(res => console.log(res.data))
 
-        window.location = '/show/';
+        // window.location = '/show/';
     }
 
     return (
         <div className="form-group">
             <form onSubmit  ={handleSubmit(onSubmitData)}>
+                <input 
+                    disabled="disabled"
+                    className="form-control member-id"
+                    type="text" 
+                    name="memberId" 
+                    defaultValue={member.memberId}
+                    placeholder="ID" 
+                    ref={register}
+                />
                 <div className="input-container">
                     <FaUser size={20} className="icon"/>
                     <input 

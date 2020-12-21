@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useForm } from 'react-hook-form';
 import { FaUser, FaRegAddressBook, FaBirthdayCake, FaWeight, FaPercentage } from "react-icons/fa";
-import { AiFillPhone, AiOutlineColumnHeight  } from "react-icons/ai";
+import { AiFillPhone, AiOutlineColumnHeight } from "react-icons/ai";
 import { GiEncirclement } from "react-icons/gi";
 
 export default function CreateMember() {
@@ -12,14 +12,24 @@ export default function CreateMember() {
     const { register, handleSubmit } = useForm();
 
     const [date, setDate] = useState(null)
+    const [memberIds, setMemberIds] = useState([])
+    const maxId = (memberIds.sort().reverse())[0]
 
     const onChangeDate = date => {
         setDate(date)
     }
 
+    useEffect(() => {
+        axios.get('/api/members')
+            .then(members => {
+                setMemberIds(members.data.map(member => member.memberId))
+            })
+    }, [])
+
     const onSubmitData = data => {
 
         const member = {
+            memberId: data.memberId,
             firstName: data.firstName,
             lastName: data.lastName,
             dateOfBirth: date,
@@ -42,7 +52,15 @@ export default function CreateMember() {
 
     return (
         <div className="form-group">
-            <form onSubmit  ={handleSubmit(onSubmitData)}>
+            <form onSubmit={handleSubmit(onSubmitData)}>
+                <input 
+                    className="form-control member-id"
+                    type="text" 
+                    name="memberId" 
+                    placeholder="ID"
+                    defaultValue={maxId}
+                    ref={register}
+                />
                 <div className="input-container">
                     <FaUser size={20} className="icon"/>
                     <input 

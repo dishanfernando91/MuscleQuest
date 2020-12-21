@@ -15,10 +15,26 @@ export default function MemberList() {
         .catch(err => console.log(err))
     }, [])
 
+    const setStatus = id => {
+        setMembers(members.map(member => {
+            if(member._id === id) {
+               return ({
+                   ...member,
+                   status: !member.status
+                })
+            } else {
+                return member
+            }
+        }))
+        const updatedMember = (members.find(member => member._id === id))
+        axios.post(`/api/members/update/${id}`, ({...updatedMember, status: !updatedMember.status}))
+            .then(res => res.data)
+    
+    }
 
     const memberList = () => {
-        return members.map(currentMember => {
-            return <Member member={currentMember} key={currentMember._id} />
+        return (members.sort((x, y) => (x === y) ? 0 : x ? -1 : 1)).map(currentMember => {
+            return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
         })
     }
 
@@ -27,13 +43,15 @@ export default function MemberList() {
             <table className="table">
             <thead className="thead-light">
                 <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Date of Birth</th>
-                <th>Gender</th>
-                <th>Address</th>
-                <th>Phone Number</th>
-                <th>Commencement</th>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>Commencement</th>
+                    <th>Activity</th>
                 </tr>
             </thead>
             <tbody>

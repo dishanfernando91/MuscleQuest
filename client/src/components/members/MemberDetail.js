@@ -35,7 +35,7 @@ export default function MemberDetail(props) {
 
         window.location = '/';
     }
-    //---------------------------------------------------------------------//
+
     return (
         <>
         <div className="member-card" >

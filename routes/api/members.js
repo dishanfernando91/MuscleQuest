@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 });
 
 // @route   api/members
-// @desc    Create or update a member
+// @desc    Update a member
 // @access  Private
 router.post('/', 
     [
@@ -32,8 +32,8 @@ router.post('/',
         //     return res.status(400).json({ errors: errors.array()})
         // }
         
-        let { 
-            // memberId, 
+        const { 
+            memberId, 
             firstName, 
             lastName, 
             dateOfBirth, 
@@ -42,11 +42,10 @@ router.post('/',
             gender, 
             features, 
             status 
-        } = req. body
+        } = req.body
 
-    
-        let newMember = new Members({
-            // memberId,
+        const newMember = new Members({
+            memberId,
             firstName,
             lastName,
             dateOfBirth,
@@ -66,6 +65,35 @@ router.post('/',
     }
     
 });
+
+// @route   api/members/udpate/:id
+// @desc    Update a member
+// @access  Private
+router.post('/update/:id', (req, res) => {
+    Members.findById(req.params.id)
+      .then(member => {
+        member.memberId = req.body.memberId
+        member.firstName = req.body.firstName;
+        member.lastName = req.body.lastName;
+        member.dateOfBirth = req.body.dateOfBirth;
+        member.address = req.body.address;
+        member.phoneNumber = req.body.phoneNumber;
+        member.gender = req.body.gender;
+        member.status = req.body.status;
+        member.features = {
+            height: req.body.features.height,
+            weight: req.body.features.weight,
+            bodyFat: req.body.features.bodyFat,
+            waist: req.body.features.waist,
+            }
+
+        member.save()
+          .then(() => res.json('Member updated!'))
+          .catch(err => res.status(400).json('Error: ' + err));
+      })
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
 
 // @route   api/members/:id
 // @desc    GET a single member
