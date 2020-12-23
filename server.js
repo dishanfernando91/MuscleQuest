@@ -28,7 +28,7 @@ connectDB()
 //     }
 //   }
   
-app.use(auth);
+// app.use(auth);
 
 //Init Middleware
 app.use(express.json({ extended: false }))
