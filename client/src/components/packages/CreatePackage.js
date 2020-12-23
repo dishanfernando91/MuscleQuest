@@ -63,8 +63,10 @@ export default function CreatePackage() {
                     <input type="text" placeholder="Duration of Package" name="duration" ref={register}/>
                 </div>
                 <div className="pkg-button">
-                    <input type="submit" 
-                    className="submit-form"/>
+                    <input type="submit"
+                        text="Create Payment"
+                        className="submit-form"
+                    />
                 </div>
             </form>
         </div>

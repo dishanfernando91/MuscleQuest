@@ -29,7 +29,7 @@ export default function CreateMember() {
     const onSubmitData = data => {
 
         const member = {
-            memberId: data.memberId,
+            memberId: Math.abs(data.memberId),
             firstName: data.firstName,
             lastName: data.lastName,
             dateOfBirth: date,
@@ -60,6 +60,7 @@ export default function CreateMember() {
                     placeholder="ID"
                     defaultValue={maxId}
                     ref={register}
+                    required
                 />
                 <div className="input-container">
                     <FaUser size={20} className="icon"/>
@@ -69,6 +70,7 @@ export default function CreateMember() {
                         name="firstName" 
                         placeholder="First name" 
                         ref={register}
+                        required
                     />
                     <input 
                         className="form-control" 
