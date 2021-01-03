@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useReducer } from 'react';
+import Select from 'react-select'
 import Member from './Member'
 import axios from 'axios';
+
 
 export default function MemberList() {
 
     const [members, setMembers] = useState([])
+    const [active, toggleActive] = useReducer(active => !active)
+    const [inactive, toggleInactive] = useReducer(inactive => !inactive)
+    const [searchQuery, setSearch] = useState("")
+    const [sortQuery, setSort] = useState("")
 
     useEffect(() => {
         axios.get('/api/members')
@@ -29,19 +34,84 @@ export default function MemberList() {
         const updatedMember = (members.find(member => member._id === id))
         axios.post(`/api/members/update/${id}`, ({...updatedMember, status: !updatedMember.status}))
             .then(res => res.data)
-    
     }
 
-    
+    const options = [
+        { value: 'nameAsc', label: 'Name - Ascending'},
+        { value: 'nameDsc', label: 'Name - Descending'},
+        { value: 'idAsc', label: 'ID - Ascending'},
+        { value: 'idDsc', label: 'ID - Descending'},
+    ]
+
+    const handleChange = sortQuery => {
+        setSort(sortQuery.value)
+      };
 
     const memberList = () => {
+        if(active) {
+            return (members.filter(member => member.status === true)).map(currentMember => {
+                return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+            })
+        }
+        if(inactive) {
+            return (members.filter(member => member.status === false)).map(currentMember => {
+                return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+            })
+        }
+        if(!!searchQuery){
+            const searchedMembers = members.filter(member => {
+                return member.firstName.toLowerCase().includes(searchQuery.toLowerCase()) || member.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+            })
+            return (searchedMembers).map(currentMember => {
+                return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+                })
+       
+        } 
+        if(!!sortQuery){
+            if(sortQuery === 'nameAsc'){
+                return (members.sort((x, y) => (x.firstName < y.firstName) ? -1 : 1)).map(currentMember => {
+                    return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+                })}
+            if(sortQuery === 'nameDsc'){
+                return (members.sort((x, y) => (x.firstName > y.firstName) ? -1 : 1)).map(currentMember => {
+                    return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+                })}
+            if(sortQuery === 'idAsc'){
+                return (members.sort((x, y) => (x.memberId < y.memberId) ? -1 : 1)).map(currentMember => {
+                    return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+                })
+            }
+            if(sortQuery === 'idDsc'){
+                return (members.sort((x, y) => (x.memberId > y.memberId) ? -1 : 1)).map(currentMember => {
+                    return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
+                })
+            }
+    }
+
+        else {
         return (members.sort((x, y) => (x.status === y.status) ? 0 : x.status ? -1 : 1)).map(currentMember => {
             return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
-        })
+        })}
     }
 
     return (
         <div className="container">
+            <div className="searchTab">
+                <input className="searchBar" type="text" placeholder="Search..." onChange={e => setSearch(e.target.value)}/>
+                <div className="activity-checkbox">
+                    <input type="checkbox" value={active} onChange={toggleActive} disabled={inactive ? true : false}/>Active
+                    <input type="checkbox" value={inactive} onChange={toggleInactive} disabled={active ? true : false}/>Inactive
+                </div>
+              
+                <span>
+                    <Select
+                        placeholder="Sort by..."
+                        className="sort-tab"
+                        options={options} 
+                        onChange={handleChange}
+                    />
+                </span>
+            </div>
             <table className="table">
             <thead className="thead-light">
                 <tr>

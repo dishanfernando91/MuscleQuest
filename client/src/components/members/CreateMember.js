@@ -13,7 +13,7 @@ export default function CreateMember() {
 
     const [date, setDate] = useState(null)
     const [memberIds, setMemberIds] = useState([])
-    const maxId = (memberIds.sort().reverse())[0]
+    const maxId = Math.max(memberIds)
 
     const onChangeDate = date => {
         setDate(date)
@@ -24,7 +24,7 @@ export default function CreateMember() {
             .then(members => {
                 setMemberIds(members.data.map(member => member.memberId))
             })
-    }, [])
+    }, [memberIds])
 
     const onSubmitData = data => {
 
@@ -58,7 +58,7 @@ export default function CreateMember() {
                     type="text" 
                     name="memberId" 
                     placeholder="ID"
-                    defaultValue={maxId}
+                    defaultValue={maxId + 1}
                     ref={register}
                     required
                 />
@@ -119,6 +119,7 @@ export default function CreateMember() {
                         onChange = {onChangeDate}
                         placeholderText="Select date"
                         dateFormat='dd/MM/yyyy'
+                        maxDate={new Date()}
                     />
                 </div>
                 <div className="features-group">

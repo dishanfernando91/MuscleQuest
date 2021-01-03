@@ -127,12 +127,12 @@ export default function CreatePayment() {
                 <Controller
                     as={<Select 
                         options={months}/>}
-                    name="months"
-                    control={control}
-                    isSearchable
-                    defaultValue={{ value: currentMonth, label: currentMonth }}
-                    className="pyt-selector"
-                />
+                        name="months"
+                        control={control}
+                        isSearchable
+                        defaultValue={{ value: currentMonth, label: currentMonth }}
+                        className="pyt-selector"
+                    />
                 <Controller
                     as={<Select options={memberOptions}/>}
                     name="member"

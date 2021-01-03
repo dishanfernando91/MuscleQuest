@@ -26,6 +26,43 @@
   transition: all 0.5s;
 }
 
+/* --------------Table Search Bar------------- */
+.searchTab {
+  display: flex;
+  justify-content: flex-start;
+  height: 40px;
+  /* border: 1px solid black;
+  background-color: #f0f0f0; */
+  margin-bottom: 10px;
+}
+.searchBar {
+  height: 30px;
+  padding-top: 10px;
+  padding-right: 20px;
+  margin-right: 20px;
+  border: none;
+  border-bottom: 1px solid #aee0a4;
+  outline: none;
+}
+.activity-checkbox {
+  display: flex;
+  padding-top: 7px;
+  padding-right: 20px;
+  align-items: stretch;
+}
+.activity-checkbox input {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  margin-left: 8px;
+  border: none;
+}
+
+.sort-tab {
+  width: 250px;
+  height: 10px;
+}
+
 /* ----------------------------------- */
 /* -------------- Form ---------------- */
 /* ------------------------------------ */

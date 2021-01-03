@@ -72,14 +72,13 @@ router.post('/',
 router.post('/update/:id', (req, res) => {
     Members.findById(req.params.id)
       .then(member => {
-        member.memberId = req.body.memberId
+        member.memberId = req.body.memberId,
         member.firstName = req.body.firstName;
         member.lastName = req.body.lastName;
         member.dateOfBirth = req.body.dateOfBirth;
         member.address = req.body.address;
         member.phoneNumber = req.body.phoneNumber;
         member.gender = req.body.gender;
-        member.status = req.body.status;
         member.features = {
             height: req.body.features.height,
             weight: req.body.features.weight,

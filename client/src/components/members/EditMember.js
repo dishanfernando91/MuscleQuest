@@ -66,6 +66,7 @@ export default function EditMember(props) {
 
     const onSubmitData = data => {
         const updatedMember = {
+            memberId: member.memberId,
             firstName: data.firstName,
             lastName: data.lastName,
             dateOfBirth: date,
