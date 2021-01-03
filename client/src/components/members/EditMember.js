@@ -83,7 +83,7 @@ export default function EditMember(props) {
         axios.post(`/api/members/update/${props.match.params.id}`, updatedMember)
             .then(res => console.log(res.data))
 
-        // window.location = '/show/';
+        window.location = '/show/';
     }
 
     return (
