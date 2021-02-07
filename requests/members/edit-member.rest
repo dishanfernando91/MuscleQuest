@@ -1,0 +1,9 @@
+POST http://localhost:5000/api/members/update/5fe30ef7be2bf80017967456
+Content-Type: application/json
+
+{
+    "memberId": "1",
+    "firstName": "Jonny",
+    "status": true,
+   
+}

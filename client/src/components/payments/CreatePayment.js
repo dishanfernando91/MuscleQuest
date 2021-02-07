@@ -3,21 +3,19 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
+import CustomModal from '../layout/Modal'
 
 export default function CreatePayment() {
 
-    const { handleSubmit, control } = useForm();
+    const { handleSubmit, control, reset } = useForm();
     const [packages, setPackages] = useState([])
     const [allPayments, setAllPayments] = useState({});
     const [members, setMembers] = useState([]);
 
-    useEffect(() => {
-        axios.get('/api/packages/')
-        .then(res => {
-            setPackages(res.data)
-        })
-        .catch(err => console.log(err))
-    }, [])
+    // Modal Settings
+    const [modalShow, setModalShow] = useState(false)
+    const [modalStatus, setModalStatus] = useState("")
+    const [valErrors, setValErrors] = useState([])
 
     useEffect(() => {
         axios.get('/api/members/')
@@ -25,32 +23,34 @@ export default function CreatePayment() {
             setMembers(res.data.filter(member => member.status));
         })
         .catch(err => console.log(err))
-    }, [])
 
-    useEffect(() => {
         axios.get('/api/payments/')
         .then(res => {
             setAllPayments(res.data)
         })
         .catch(err => console.log(err))
+
+        axios.get('/api/packages/')
+        .then(res => {
+            setPackages(res.data)
+        })
+        .catch(err => console.log(err))
+
     }, [])
 
     // React Select Options
     const memberOptions = members.map(member => {
-       return {value: member, label: `${member.firstName} ${member.lastName}`}
+       return {value: member, label: `${member.memberId} - ${member.firstName} ${member.lastName}`}
     })
 
     // const memberIdOptions = members.map(member => {
     //     return {value: member.memberId, label: `${member.memberId}`}
     // })
 
-    //package --> gymPackage, package is reserved
     const packageOptions = packages.filter(gymPackage => gymPackage.status).map(gymPackage => {
-           return {value: gymPackage, label: gymPackage.title} 
+           return { value: gymPackage, label: gymPackage.title } 
     });
 
-    
-   
     const months = [    
         {value: "January", label: "January"},
         {value: "February", label: "February"},
@@ -67,9 +67,9 @@ export default function CreatePayment() {
         ];
 
     const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().toLocaleDateString('default', {month: 'long'});
+    const currentMonth = new Date().toLocaleDateString('default', { month: 'long' });
 
-    const onSubmitData = data => {
+    const onSubmitData = async data => {
 
         const lastEntry = allPayments[allPayments.length - 1]
         const allMonths = allPayments.map(record => record.month)
@@ -82,32 +82,54 @@ export default function CreatePayment() {
             }
         }
 
-        const payment = {   
-            month: data.months.value,
-            payments: {
-                memberID: data.member.value._id,
-                package: data.gymPackage.value._id
+        if(data.member && data.gymPackage) {
+            const payment = {   
+                month: data.months.value,
+                payments: [{
+                    memberID: data.member.value._id,
+                    package: data.gymPackage.value._id
+                }]
             }
-        }
+            try {
+                if(allPayments.length === 0){
+                    const response = await axios.post('/api/payments/add', payment)
+                    if(response){
+                        console.log(response)
+                        setModalStatus(response.data)
+                        setModalShow(true)
+                    } 
+                } else if(currentMonth === lastEntry.month && currentYear === lastEntry.year) {
+                    const response = await axios.put(`/api/payments/update/${lastEntry._id}`, payment)
+                    if(response){
+                        setModalStatus(response.data)
+                        setModalShow(true)
+                    }     
         
-        if(allPayments.length === 0){
-            axios.post('/api/payments/add', payment)
-                .then(res => console.log(res.data))    
-
-        } else if(currentMonth === lastEntry.month && currentYear === lastEntry.year) {
-            axios.put(`/api/payments/update/${lastEntry._id}`, payment)
-                .then(res => console.log(res.data))    
-
-        } else if(allMonths.includes(data.months.value) && allYears.includes(currentYear.toString())){
-            axios.put(`/api/payments/update/${diffMonth(data.months.value)}`, payment)
-               .then(res => console.log(res.data))   
-
+                } else if(allMonths.includes(data.months.value) && allYears.includes(currentYear.toString())){
+                    const response = await axios.put(`/api/payments/update/${diffMonth(data.months.value)}`, payment)
+                    if(response){
+                        setModalStatus(response.data)
+                        setModalShow(true)
+                    } 
+                } else {
+                    const response = await axios.post('/api/payments/add', payment)
+                    if(response){
+                        setModalStatus(response.data)
+                        setModalShow(true)
+                    } 
+                }
+            } catch (error) {
+                setModalStatus("Submission Failed")
+                setModalShow(true)
+                setValErrors(error.response.data.errors)
+                console.log(error.response.data.errors);
+            }
         } else {
-            axios.post('/api/payments/add', payment)
-                .then(res => console.log(res.data))
+            setModalStatus("Submission Failed")
+            setModalShow(true)
+            setValErrors([{msg: "Member ID and Package details needed"}])
         }
-        
-        window.location.reload(false);
+        // window.location.reload(false);
     }  
 
     return (
@@ -156,6 +178,17 @@ export default function CreatePayment() {
                 <Link className="pyt-history-text" to={`/payments/history`}>View Payment History</Link>
             </div>
         </div>
+        <CustomModal
+            location={'Create Payment'}
+            errors={valErrors}
+            status={modalStatus}
+            show={modalShow}
+            onHide={() => {
+                setModalShow(false)
+                reset()
+                setValErrors([])
+            }}
+        />
         </>
     )
 }

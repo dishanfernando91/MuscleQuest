@@ -26,15 +26,6 @@ export default function MemberDetail(props) {
         .catch(err => console.log(err))
     }, [])
     
-      //Delete Member functionality
-    function deleteMember(id) {
-        axios.delete(`/api/members/${id}`)
-            .then(response => { console.log(response.data)});
-
-        setMembers(members.filter(el => el._id !== id))
-
-        window.location = '/';
-    }
 
     return (
         <>
@@ -43,7 +34,7 @@ export default function MemberDetail(props) {
                 <h3>{firstName} {lastName} - {gender}</h3>
                 <div className="buttons">
                     <button><Link to={`/edit/${member._id}`}>Edit</Link></button> <span>|</span>
-                    <button onClick={() => deleteMember(member._id)}>Delete</button>
+                    <button>Set Inactive</button>
                 </div>
             </div>
             <div className="card-details">

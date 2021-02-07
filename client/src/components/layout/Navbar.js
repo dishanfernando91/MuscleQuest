@@ -13,7 +13,7 @@ export default function Navbar() {
     const show = menu ? "show" : "" ;
 
     return (
-        <nav className="navbar navbar-expand-sm bg-success navbar-dark">
+        <nav className="navbar navbar-expand-sm bg-success navbar-dark" >
             <div className="container">
                 <Link to="/" className="navbar-brand">
                     <img className="nav-img" src={logo} alt="" />

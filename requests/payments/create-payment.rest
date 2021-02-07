@@ -1,11 +1,11 @@
-POST http://localhost:5000/api/payments/
+PUT http://localhost:5000/api/payments/update/601f8a7659be1f43d42c46ba/
 Content-Type: application/json
 
 {
-    "year": "2009",
-    "month": "November",
-    "payments": {
-        "memberId": "12345",
+    "year": "2021",
+    "month": "February",
+    "payments": [{
+        "memberID": "600fd0662bf0b03e9091df93",
         "package": "Basic"
-    }
+    }]
 }

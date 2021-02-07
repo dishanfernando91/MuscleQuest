@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import CustomModal from '../layout/Modal'
 
 import PackageDetails from './PackageDetails'
 
 export default function CreatePackage() {
 
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [packages, setPackages] = useState([])
+    const [modalShow, setModalShow] = useState(false)
+    const [modalStatus, setModalStatus] = useState("")
+    const [valErrors, setValErrors] = useState([])
     
     useEffect(() => {
         axios.get('/api/packages')
@@ -17,15 +21,24 @@ export default function CreatePackage() {
         .catch(err => console.log(err))
     }, [])
     
-    const onSubmitData = data => {
+    const onSubmitData = async data => {
         const packageInfo = {
             title: data.title,
             fee: data.fee,
             duration: data.duration,
         }
-        axios.post('/api/packages', packageInfo)
-            .then(res => console.log(res.data))
-        window.location = '/packages';
+        try {
+            const response = await axios.post('/api/packages', packageInfo)
+            if(response){
+                setModalStatus(response.data.msg)
+                setModalShow(true)
+            }       
+        } catch (error) {
+            setModalStatus("Submission Failed")
+            setModalShow(true)
+            setValErrors(error.response.data.errors)
+            console.log(error.response.data.errors);
+        }
     }  
     
     const packageList = () => {
@@ -59,8 +72,8 @@ export default function CreatePackage() {
             <form onSubmit={handleSubmit(onSubmitData)}>
                 <div className="pkg-form">
                     <input type="text" placeholder="Package title" name="title" ref={register}/>
-                    <input type="text" placeholder="Fee" name="fee" ref={register}/>
-                    <input type="text" placeholder="Duration of Package" name="duration" ref={register}/>
+                    <input type="number" placeholder="Fee (Rs.)" name="fee" ref={register}/>
+                    <input type="number" placeholder="Duration (Days)" name="duration" ref={register}/>
                 </div>
                 <div className="pkg-button">
                     <input type="submit"
@@ -69,6 +82,17 @@ export default function CreatePackage() {
                     />
                 </div>
             </form>
+            <CustomModal
+                location={'Create Package'}
+                errors={valErrors}
+                status={modalStatus}
+                show={modalShow}
+                onHide={() => {
+                    setModalShow(false)
+                    reset()
+                    setValErrors([])
+                }}
+        />
         </div>
     )
 }

@@ -2,5 +2,6 @@ POST http://localhost:5000/api/members
 Content-Type: application/json
 
 {
-  "firstName":"Dishan"
+  "memberId":99999,
+  "firstName": "asdac"
 }

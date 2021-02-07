@@ -47,7 +47,7 @@ export default function PaymentHistory() {
     }   
     const distinctYears = [...new Set(yearRange())];
     const yearOptions = distinctYears.map(year => {
-        return {value: year, label: year}
+        return { value: year, label: year }
     })
 
     //Generate unique months to display in select option...
@@ -168,6 +168,7 @@ export default function PaymentHistory() {
                             isSearchable
                             // isMulti
                             onChange={setSelectedYears}
+                            
                         />
                         <br/>
                         <Select 

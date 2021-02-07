@@ -3,8 +3,6 @@ const router = express.Router()
 const { check, validationResult } = require('express-validator')
 const Members = require('../../models/Members');
 
-// Member updation pending.
-
 // @route   api/members
 // @desc    GET all members  
 // @access  Private
@@ -16,7 +14,6 @@ router.get('/', async (req, res) => {
         console.error(err.message);
         res.status(500).send('Server Error')
     }
-    
 });
 
 // @route   api/members
@@ -24,15 +21,23 @@ router.get('/', async (req, res) => {
 // @access  Private
 router.post('/', 
     [
-        // check('memberId', 'Please include an ID').not().isEmpty(),
-        // check('firstName', 'Please include a first name.')
-    ], async (req, res) => {
-        // const errors = validationResult(req)
-        // if(!errors.isEmpty()) {
-        //     return res.status(400).json({ errors: errors.array()})
-        // }
+        check('memberId', 'ID is required.').not().isEmpty(),
+        check('firstName', 'First name is required').not().isEmpty(),
+        check('memberId').custom(id => {
+            return Members.findOne({ memberId: id }).then(id => {
+              if(id) {
+                return Promise.reject('Duplicate ID');
+              }
+            });
+          }),
+    ], 
+    async (req, res) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array()})
+        }
         
-        const { 
+    const {     
             memberId, 
             firstName, 
             lastName, 
@@ -58,7 +63,7 @@ router.post('/',
 
     try {
         await newMember.save()
-        res.status(200).json({ msg: 'Member created'})
+        res.status(200).json({ msg: 'Member Created'})
     } catch (err) {
         console.error(err);
         res.status(500).send('Server error')
@@ -69,7 +74,16 @@ router.post('/',
 // @route   api/members/udpate/:id
 // @desc    Update a member
 // @access  Private
-router.post('/update/:id', (req, res) => {
+router.post('/update/:id', 
+[
+    check('firstName', 'First name is required').not().isEmpty()
+], 
+    (req, res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array()})
+    }
+
     Members.findById(req.params.id)
       .then(member => {
         member.memberId = req.body.memberId,
@@ -78,6 +92,7 @@ router.post('/update/:id', (req, res) => {
         member.dateOfBirth = req.body.dateOfBirth;
         member.address = req.body.address;
         member.phoneNumber = req.body.phoneNumber;
+        member.status = req.body.status;
         member.gender = req.body.gender;
         member.features = {
             height: req.body.features.height,
@@ -87,7 +102,7 @@ router.post('/update/:id', (req, res) => {
             }
 
         member.save()
-          .then(() => res.json('Member updated!'))
+          .then(() => res.json('Member Updated!'))
           .catch(err => res.status(400).json('Error: ' + err));
       })
       .catch(err => res.status(400).json('Error: ' + err));

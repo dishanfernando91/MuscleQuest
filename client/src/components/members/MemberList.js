@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import Select from 'react-select'
-import Member from './Member'
+import Member from '../members/Member'
 import axios from 'axios';
+import Spinner from '../layout/Spinner'
 
 
 export default function MemberList() {
@@ -11,11 +12,13 @@ export default function MemberList() {
     const [inactive, toggleInactive] = useReducer(inactive => !inactive)
     const [searchQuery, setSearch] = useState("")
     const [sortQuery, setSort] = useState("")
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         axios.get('/api/members')
         .then(res => {
             setMembers(res.data)
+            setIsLoading(false)
         })
         .catch(err => console.log(err))
     }, [])
@@ -31,9 +34,10 @@ export default function MemberList() {
                 return member
             }
         }))
-        const updatedMember = (members.find(member => member._id === id))
+        let updatedMember = (members.find(member => member._id === id))
         axios.post(`/api/members/update/${id}`, ({...updatedMember, status: !updatedMember.status}))
-            .then(res => res.data)
+            .then(res => console.log(res.data))
+        // console.log(updatedMember)
     }
 
     const options = [
@@ -87,7 +91,6 @@ export default function MemberList() {
                 })
             }
     }
-
         else {
         return (members.sort((x, y) => (x.status === y.status) ? 0 : x.status ? -1 : 1)).map(currentMember => {
             return <Member member={currentMember} key={currentMember._id} setStatus={setStatus} />
@@ -112,6 +115,9 @@ export default function MemberList() {
                     />
                 </span>
             </div>
+            { isLoading ? 
+                <Spinner />
+            : 
             <table className="table">
             <thead className="thead-light">
                 <tr>
@@ -127,9 +133,10 @@ export default function MemberList() {
                 </tr>
             </thead>
             <tbody>
-                {memberList()}
+                 {memberList()}
             </tbody>
             </table>
+        }
         </div>
     )
 }

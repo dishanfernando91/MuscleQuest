@@ -18,14 +18,23 @@ router.get('/', async (req, res) => {
 // @route   api/packages
 // @desc    Create a package
 // @access  Private
-router.post('/', [
-    check('title', 'Package title is required'),
-    check('fee', 'Package fee is required')
-], async (req, res) => {
-    const errors = validationResult(req)
-        if(!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array()})
-        }
+router.post('/', 
+    [
+        check('title', 'Package Title is required.').not().isEmpty(),
+        check('fee', 'Package fee is required').not().isEmpty(),
+        check('title').custom(title => {
+            return Packages.findOne({ title: title }).exec().then(title => {
+            if(title) {
+                return Promise.reject('Duplicate Title');
+            }
+            });
+        }),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req)
+            if(!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array()})
+            }
         
     const { title, fee, duration } = req.body
 
@@ -36,7 +45,7 @@ router.post('/', [
     });
 
     await newPackage.save()
-    res.json({ msg: "New package created"})
+    res.json({ msg: "New Package Created!"})
 });
 
 // @route   api/packages/:id
