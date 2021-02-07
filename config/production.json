@@ -1,3 +1,3 @@
 {
-    "mongoURI": "mongodb+srv://admin:Divulapitiya@cluster0.gxjxy.mongodb.net/Gym_data?retryWrites=true&w=majority"
+    "mongoURI": "mongodb+srv://adminUser:srilanka@cluster0.1yiyk.mongodb.net/Gym_Members?retryWrites=true&w=majority"
 }
